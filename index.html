@@ -290,6 +290,19 @@
     background: var(--ground-deep);
   }
 
+  /* Repli affiché derrière l'iframe : si un navigateur bloque les cadres
+     tiers, l'aperçu reste lisible au lieu d'être une zone vide. */
+  .frame-view::before {
+    content: attr(data-fallback);
+    position: absolute; inset: 0;
+    display: flex; align-items: center; justify-content: center;
+    padding: 1.5rem;
+    text-align: center;
+    font-size: 1.05rem; font-weight: 600;
+    color: var(--muted);
+    background: var(--ground-deep);
+  }
+
   /* L'iframe voit un viewport 2× plus large que le cadre, puis est réduite :
      on obtient un vrai rendu desktop miniature, sans JS. */
   .frame-view iframe {
@@ -299,6 +312,7 @@
     transform: scale(0.5);
     transform-origin: 0 0;
     pointer-events: none;
+    z-index: 1; /* passe devant le repli */
   }
 
   /* ---------- Pied de page ---------- */
@@ -408,7 +422,7 @@
           <div class="frame-dots" aria-hidden="true"><i></i><i></i><i></i></div>
           <div class="frame-url">codein23.github.io/trade-journal</div>
         </div>
-        <div class="frame-view">
+        <div class="frame-view" data-fallback="Aperçu de Trade Journal + Analytics">
           <iframe src="https://codein23.github.io/trade-journal/" title="Aperçu de Trade Journal + Analytics"
                   loading="lazy" tabindex="-1" scrolling="no"></iframe>
         </div>
@@ -447,7 +461,7 @@
           <div class="frame-dots" aria-hidden="true"><i></i><i></i><i></i></div>
           <div class="frame-url">codein23.github.io/kynderbraids</div>
         </div>
-        <div class="frame-view">
+        <div class="frame-view" data-fallback="Aperçu de Kynder Braids">
           <iframe src="https://codein23.github.io/kynderbraids/" title="Aperçu de Kynder Braids"
                   loading="lazy" tabindex="-1" scrolling="no"></iframe>
         </div>
@@ -483,6 +497,13 @@
       });
     }, { rootMargin: "0px 0px -8% 0px" });
     document.querySelectorAll(".reveal").forEach(function (el) { io.observe(el); });
+
+    // Filet de sécurité : quoi qu'il arrive, rien ne reste invisible.
+    setTimeout(function () {
+      document.querySelectorAll(".reveal:not(.in)").forEach(function (el) {
+        el.classList.add("in");
+      });
+    }, 2500);
   }
 </script>
 
