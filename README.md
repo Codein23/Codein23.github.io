@@ -7,8 +7,10 @@ Sert `https://codein23.github.io/`, qui renvoie vers :
 | Projet | URL |
 |---|---|
 | Trade Journal + Analytics | https://codein23.github.io/trade-journal/ |
-| FX Journal Dashboard | https://codein23.github.io/fx-journal-dashboard/ |
 | Kynder Braids | https://codein23.github.io/kynderbraids/ |
+
+> `fx-journal-dashboard` est volontairement absent de cette page (outil privé),
+> même si son GitHub Pages reste actif.
 
 ## Fonctionnement
 
@@ -24,7 +26,7 @@ Dupliquer un bloc `<article class="row reveal">` dans `index.html`, puis changer
 - la description et la liste `.stack`
 - les trois URL (bouton, lien du cadre, `src` de l'iframe) et le texte `.frame-url`
 
-Penser à mettre à jour le compteur `<b>3</b> projets en ligne` dans le hero.
+Penser à mettre à jour le compteur `<b>2</b> projets en ligne` dans le hero.
 
 ## Publier
 
