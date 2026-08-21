@@ -1,0 +1,529 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Codein23 — Projets</title>
+<meta name="description" content="Les projets de Codein23 : outils de trading et sites web, tous en ligne sur GitHub Pages.">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Codein23 — Projets">
+<meta property="og:description" content="Outils de trading et sites web, tous en ligne sur GitHub Pages.">
+<meta property="og:url" content="https://codein23.github.io/">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@75..125,400..700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    /* Palette « drenched » : le fond EST la couleur */
+    --ground:      oklch(0.27 0.055 195);
+    --ground-deep: oklch(0.205 0.045 195);
+    --surface:     oklch(0.325 0.05 195);
+    --surface-hi:  oklch(0.375 0.05 195);
+    --line:        oklch(0.45 0.045 195);
+    --ink:         oklch(0.96 0.015 90);
+    --muted:       oklch(0.82 0.028 195);
+    --accent:      oklch(0.80 0.15 68);
+    --accent-hot:  oklch(0.72 0.18 48);
+
+    --dot-trade:   oklch(0.74 0.13 300);
+    --dot-fx:      oklch(0.80 0.15 78);
+    --dot-kb:      oklch(0.70 0.10 50);
+
+    --shell: min(1180px, 100% - 2.5rem);
+    --ease: cubic-bezier(0.16, 1, 0.3, 1);
+
+    color-scheme: dark;
+  }
+
+  * { box-sizing: border-box; }
+
+  html { -webkit-text-size-adjust: 100%; }
+
+  body {
+    margin: 0;
+    background: var(--ground);
+    color: var(--ink);
+    font-family: "Archivo", system-ui, -apple-system, "Segoe UI", sans-serif;
+    font-size: 1rem;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  h1, h2, h3 { text-wrap: balance; margin: 0; }
+  p { text-wrap: pretty; margin: 0; }
+
+  a { color: inherit; }
+
+  ::selection { background: var(--accent); color: oklch(0.2 0.04 60); }
+
+  :focus-visible {
+    outline: 3px solid var(--accent);
+    outline-offset: 3px;
+    border-radius: 4px;
+  }
+
+  .shell { width: var(--shell); margin-inline: auto; }
+
+  .skip {
+    position: absolute; left: -9999px;
+    background: var(--accent); color: oklch(0.2 0.04 60);
+    padding: 0.85rem 1.4rem; border-radius: 999px;
+    font-weight: 600; text-decoration: none; z-index: 10;
+  }
+  .skip:focus { left: 1.25rem; top: 1.25rem; }
+
+  /* ---------- Hero ---------- */
+
+  .hero {
+    padding-block: clamp(4.5rem, 14vw, 9rem) clamp(3rem, 8vw, 5rem);
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* Halo diffus : donne de la profondeur au fond monochrome */
+  .hero::before {
+    content: "";
+    position: absolute;
+    inset-block-start: -30%;
+    inset-inline-end: -15%;
+    width: min(46rem, 90vw);
+    aspect-ratio: 1;
+    background: radial-gradient(circle, oklch(0.55 0.11 190 / 0.5), transparent 68%);
+    pointer-events: none;
+  }
+
+  .hero > * { position: relative; }
+
+  .mark {
+    display: inline-flex; align-items: center; gap: 0.6rem;
+    font-size: 0.9rem; font-weight: 600;
+    letter-spacing: 0.01em;
+    color: var(--muted);
+  }
+
+  .pulse {
+    width: 0.55rem; height: 0.55rem; border-radius: 999px;
+    background: var(--accent);
+    box-shadow: 0 0 0 0 oklch(0.80 0.15 68 / 0.6);
+    animation: pulse 2.6s var(--ease) infinite;
+  }
+
+  @keyframes pulse {
+    0%   { box-shadow: 0 0 0 0 oklch(0.80 0.15 68 / 0.55); }
+    70%  { box-shadow: 0 0 0 0.7rem oklch(0.80 0.15 68 / 0); }
+    100% { box-shadow: 0 0 0 0 oklch(0.80 0.15 68 / 0); }
+  }
+
+  h1 {
+    margin-block-start: 1.6rem;
+    font-size: clamp(3rem, 11vw, 5.75rem);
+    font-stretch: 112%;
+    font-weight: 700;
+    line-height: 0.94;
+    letter-spacing: -0.035em;
+  }
+
+  .lede {
+    margin-block-start: 1.5rem;
+    max-width: 34ch;
+    font-size: clamp(1.1rem, 2.6vw, 1.4rem);
+    color: var(--muted);
+  }
+
+  .hero-meta {
+    margin-block-start: 2.5rem;
+    display: flex; flex-wrap: wrap; gap: 0.6rem 2rem;
+    font-size: 0.95rem; color: var(--muted);
+  }
+
+  .hero-meta b {
+    color: var(--ink);
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* ---------- Projets ---------- */
+
+  .projects {
+    padding-block: clamp(2rem, 6vw, 3.5rem) clamp(4rem, 10vw, 7rem);
+  }
+
+  .projects-head {
+    display: flex; align-items: baseline; justify-content: space-between;
+    gap: 1rem; flex-wrap: wrap;
+    padding-block-end: 1.25rem;
+    border-block-end: 1px solid var(--line);
+  }
+
+  .projects-head h2 {
+    font-size: clamp(1.35rem, 3.5vw, 1.9rem);
+    font-stretch: 108%;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+  }
+
+  .projects-head span { font-size: 0.95rem; color: var(--muted); }
+
+  .row {
+    display: grid;
+    gap: clamp(1.75rem, 5vw, 3.5rem);
+    padding-block: clamp(2.75rem, 7vw, 4.5rem);
+    border-block-end: 1px solid var(--line);
+    align-items: center;
+  }
+
+  @media (min-width: 62rem) {
+    .row { grid-template-columns: 1fr 1.15fr; }
+    /* Alternance : la preview change de côté d'une ligne à l'autre */
+    .row:nth-child(even) .row-preview { order: -1; }
+  }
+
+  .row-title {
+    display: flex; align-items: center; gap: 0.7rem;
+    font-size: clamp(1.6rem, 4.5vw, 2.35rem);
+    font-stretch: 110%;
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    line-height: 1.1;
+  }
+
+  .dot {
+    width: 0.7rem; height: 0.7rem; border-radius: 999px;
+    flex: none;
+    background: var(--dot, var(--accent));
+  }
+
+  .row-desc {
+    margin-block-start: 1rem;
+    max-width: 46ch;
+    color: var(--muted);
+  }
+
+  .stack {
+    margin-block-start: 1.5rem;
+    display: flex; flex-wrap: wrap; gap: 0.5rem;
+    padding: 0; list-style: none;
+  }
+
+  .stack li {
+    font-size: 0.8rem;
+    font-weight: 500;
+    padding: 0.35rem 0.75rem;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    color: var(--muted);
+  }
+
+  .actions {
+    margin-block-start: 1.9rem;
+    display: flex; flex-wrap: wrap; gap: 0.75rem;
+  }
+
+  .btn {
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    min-height: 3rem;
+    padding: 0.7rem 1.5rem;
+    border-radius: 999px;
+    font-size: 0.95rem; font-weight: 600;
+    text-decoration: none;
+    transition: background-color 0.2s var(--ease), color 0.2s var(--ease),
+                transform 0.2s var(--ease), border-color 0.2s var(--ease);
+  }
+
+  .btn-primary { background: var(--accent); color: oklch(0.2 0.04 60); }
+  .btn-primary:hover { background: var(--accent-hot); transform: translateY(-2px); }
+
+  .btn-ghost { border: 1px solid var(--line); color: var(--ink); }
+  .btn-ghost:hover { background: var(--surface-hi); border-color: var(--ink); transform: translateY(-2px); }
+
+  .btn svg { width: 1.05rem; height: 1.05rem; flex: none; }
+
+  /* ---------- Preview live du site, cadrée comme un navigateur ---------- */
+
+  .frame {
+    display: block;
+    text-decoration: none;
+    border-radius: 0.9rem;
+    overflow: hidden;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    box-shadow: 0 1.5rem 3rem -1.5rem oklch(0.12 0.03 195 / 0.75);
+    transition: transform 0.35s var(--ease), box-shadow 0.35s var(--ease),
+                border-color 0.35s var(--ease);
+  }
+
+  .frame:hover, .frame:focus-visible {
+    transform: translateY(-6px);
+    border-color: var(--accent);
+    box-shadow: 0 2rem 3.5rem -1.5rem oklch(0.12 0.03 195 / 0.9);
+  }
+
+  .frame-bar {
+    display: flex; align-items: center; gap: 0.75rem;
+    padding: 0.65rem 0.9rem;
+    background: var(--surface-hi);
+    border-block-end: 1px solid var(--line);
+  }
+
+  .frame-dots { display: flex; gap: 0.35rem; flex: none; }
+  .frame-dots i {
+    width: 0.6rem; height: 0.6rem; border-radius: 999px;
+    background: var(--line);
+  }
+
+  .frame-url {
+    font-size: 0.78rem;
+    color: var(--muted);
+    background: var(--ground-deep);
+    padding: 0.25rem 0.7rem;
+    border-radius: 999px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .frame-view {
+    position: relative;
+    aspect-ratio: 16 / 10;
+    overflow: hidden;
+    background: var(--ground-deep);
+  }
+
+  /* L'iframe voit un viewport 2× plus large que le cadre, puis est réduite :
+     on obtient un vrai rendu desktop miniature, sans JS. */
+  .frame-view iframe {
+    position: absolute; inset-block-start: 0; inset-inline-start: 0;
+    width: 200%; height: 200%;
+    border: 0;
+    transform: scale(0.5);
+    transform-origin: 0 0;
+    pointer-events: none;
+  }
+
+  /* ---------- Pied de page ---------- */
+
+  footer {
+    background: var(--ground-deep);
+    padding-block: clamp(3rem, 8vw, 4.5rem);
+  }
+
+  .foot {
+    display: flex; flex-wrap: wrap;
+    align-items: center; justify-content: space-between;
+    gap: 1.25rem;
+  }
+
+  .foot p { color: var(--muted); font-size: 0.9rem; }
+
+  .foot a.gh {
+    display: inline-flex; align-items: center; gap: 0.55rem;
+    min-height: 3rem; padding: 0.65rem 1.4rem;
+    border: 1px solid var(--line); border-radius: 999px;
+    font-size: 0.95rem; font-weight: 600;
+    text-decoration: none;
+    transition: background-color 0.2s var(--ease), border-color 0.2s var(--ease);
+  }
+  .foot a.gh:hover { background: var(--surface); border-color: var(--ink); }
+  .foot a.gh svg { width: 1.15rem; height: 1.15rem; }
+
+  /* ---------- Révélation à l'entrée ----------
+     Par défaut tout est visible : l'animation n'est activée que si JS tourne
+     ET si l'utilisateur n'a pas demandé de réduire les animations. */
+
+  .js-reveal .reveal {
+    opacity: 0;
+    transform: translateY(1.5rem);
+    transition: opacity 0.7s var(--ease), transform 0.7s var(--ease);
+  }
+  .js-reveal .reveal.in { opacity: 1; transform: none; }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+    .js-reveal .reveal { opacity: 1; transform: none; }
+  }
+</style>
+</head>
+<body>
+
+<a class="skip" href="#projets">Aller aux projets</a>
+
+<header class="hero">
+  <div class="shell">
+    <p class="mark"><span class="pulse" aria-hidden="true"></span>Codein23 · GitHub Pages</p>
+    <h1>Outils de trading &amp; sites web.</h1>
+    <p class="lede">
+      Des projets qui tournent vraiment : trois sites en ligne, tout en statique,
+      hébergés gratuitement.
+    </p>
+    <div class="hero-meta">
+      <span><b>3</b> projets en ligne</span>
+      <span><b>0</b> serveur à maintenir</span>
+      <span>La Rochelle, France</span>
+    </div>
+  </div>
+</header>
+
+<main id="projets" class="projects">
+  <div class="shell">
+
+    <div class="projects-head reveal">
+      <h2>Les projets</h2>
+      <span>Cliquez sur un aperçu pour ouvrir le site</span>
+    </div>
+
+    <!-- ===== Trade Journal ===== -->
+    <article class="row reveal">
+      <div class="row-body">
+        <h3 class="row-title">
+          <span class="dot" style="--dot: var(--dot-trade)" aria-hidden="true"></span>
+          Trade Journal + Analytics
+        </h3>
+        <p class="row-desc">
+          Un journal de trading complet avec dashboard analytique : cartes KPI, calendrier
+          de P&amp;L mensuel, base de trades filtrable, revues quotidiennes et checklists de
+          règles. Tout est <strong>local-first</strong> — les données restent dans le
+          navigateur via IndexedDB, sans compte ni serveur.
+        </p>
+        <ul class="stack">
+          <li>React</li><li>TypeScript</li><li>Vite</li>
+          <li>Tailwind CSS</li><li>Recharts</li><li>Dexie / IndexedDB</li>
+        </ul>
+        <div class="actions">
+          <a class="btn btn-primary" href="https://codein23.github.io/trade-journal/">
+            Ouvrir le site
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+          </a>
+          <a class="btn btn-ghost" href="https://github.com/Codein23/trade-journal">Code source</a>
+        </div>
+      </div>
+
+      <a class="frame row-preview" href="https://codein23.github.io/trade-journal/"
+         aria-label="Ouvrir Trade Journal + Analytics">
+        <span class="frame-bar">
+          <span class="frame-dots" aria-hidden="true"><i></i><i></i><i></i></span>
+          <span class="frame-url">codein23.github.io/trade-journal</span>
+        </span>
+        <span class="frame-view">
+          <iframe src="https://codein23.github.io/trade-journal/" title="Aperçu de Trade Journal + Analytics"
+                  loading="lazy" tabindex="-1" scrolling="no"></iframe>
+        </span>
+      </a>
+    </article>
+
+    <!-- ===== FX Journal Dashboard ===== -->
+    <article class="row reveal">
+      <div class="row-body">
+        <h3 class="row-title">
+          <span class="dot" style="--dot: var(--dot-fx)" aria-hidden="true"></span>
+          FX Journal Dashboard
+        </h3>
+        <p class="row-desc">
+          Des panneaux de statistiques FX (calendrier, horaires, risque, discipline) générés
+          à partir d&rsquo;une base Notion. Une GitHub Action lit l&rsquo;API Notion selon un
+          planning, publie les données, et chaque panneau s&rsquo;intègre directement dans une
+          page Notion via une simple URL.
+        </p>
+        <ul class="stack">
+          <li>Chart.js</li><li>Notion API</li><li>GitHub Actions</li><li>Python</li>
+        </ul>
+        <div class="actions">
+          <a class="btn btn-primary" href="https://codein23.github.io/fx-journal-dashboard/">
+            Ouvrir le site
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+          </a>
+          <a class="btn btn-ghost" href="https://github.com/Codein23/fx-journal-dashboard">Code source</a>
+        </div>
+      </div>
+
+      <a class="frame row-preview" href="https://codein23.github.io/fx-journal-dashboard/"
+         aria-label="Ouvrir FX Journal Dashboard">
+        <span class="frame-bar">
+          <span class="frame-dots" aria-hidden="true"><i></i><i></i><i></i></span>
+          <span class="frame-url">codein23.github.io/fx-journal-dashboard</span>
+        </span>
+        <span class="frame-view">
+          <iframe src="https://codein23.github.io/fx-journal-dashboard/?panel=calendar"
+                  title="Aperçu de FX Journal Dashboard"
+                  loading="lazy" tabindex="-1" scrolling="no"></iframe>
+        </span>
+      </a>
+    </article>
+
+    <!-- ===== Kynder Braids ===== -->
+    <article class="row reveal">
+      <div class="row-body">
+        <h3 class="row-title">
+          <span class="dot" style="--dot: var(--dot-kb)" aria-hidden="true"></span>
+          Kynder Braids
+        </h3>
+        <p class="row-desc">
+          Site vitrine et boutique pour une coiffeuse à domicile spécialisée en coiffures
+          protectrices, à La Rochelle. Portfolio filtrable, grille tarifaire, panier local
+          et demandes de rendez-vous converties en messages WhatsApp préremplis — sans
+          backend à maintenir.
+        </p>
+        <ul class="stack">
+          <li>Next.js 15</li><li>TypeScript</li><li>Tailwind v4</li>
+          <li>Framer Motion</li><li>Zustand</li>
+        </ul>
+        <div class="actions">
+          <a class="btn btn-primary" href="https://codein23.github.io/kynderbraids/">
+            Ouvrir le site
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+          </a>
+          <a class="btn btn-ghost" href="https://github.com/Codein23/kynderbraids">Code source</a>
+        </div>
+      </div>
+
+      <a class="frame row-preview" href="https://codein23.github.io/kynderbraids/"
+         aria-label="Ouvrir Kynder Braids">
+        <span class="frame-bar">
+          <span class="frame-dots" aria-hidden="true"><i></i><i></i><i></i></span>
+          <span class="frame-url">codein23.github.io/kynderbraids</span>
+        </span>
+        <span class="frame-view">
+          <iframe src="https://codein23.github.io/kynderbraids/" title="Aperçu de Kynder Braids"
+                  loading="lazy" tabindex="-1" scrolling="no"></iframe>
+        </span>
+      </a>
+    </article>
+
+  </div>
+</main>
+
+<footer>
+  <div class="shell foot">
+    <p>© <span id="year">2026</span> Codein23 — tous les projets sont hébergés sur GitHub Pages.</p>
+    <a class="gh" href="https://github.com/Codein23">
+      <svg viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27s1.36.09 2 .27c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8Z"/></svg>
+      Voir le profil GitHub
+    </a>
+  </div>
+</footer>
+
+<script>
+  document.getElementById("year").textContent = new Date().getFullYear();
+
+  // Révélation progressive — uniquement si les animations sont les bienvenues.
+  var motionOK = window.matchMedia("(prefers-reduced-motion: no-preference)").matches;
+  if (motionOK && "IntersectionObserver" in window) {
+    document.documentElement.classList.add("js-reveal");
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (entry.isIntersecting) {
+          entry.target.classList.add("in");
+          io.unobserve(entry.target);
+        }
+      });
+    }, { rootMargin: "0px 0px -8% 0px" });
+    document.querySelectorAll(".reveal").forEach(function (el) { io.observe(el); });
+  }
+</script>
+
+</body>
+</html>
