@@ -1,0 +1,499 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Mémoire+ · Kim, Leitner, Blurting</title>
+<meta name="description" content="Trois méthodes de mémorisation efficaces : le Jeu de Kim, le Système Leitner et le Blurting.">
+<link rel="icon" href="../icon.svg">
+<style>
+:root{
+  --bg:#f5f6fb;--card:#fff;--ink:#1c2033;--mute:#6a7090;--line:#e3e6f2;
+  --kim:#e8590c;--kim-s:#fff0e6;--lei:#2b8a3e;--lei-s:#e9f7ec;--blu:#4263eb;--blu-s:#edf0ff;
+  --ok:#2b8a3e;--ko:#e03131;--accent:var(--kim);--accent-s:var(--kim-s);
+  --r:16px;--sh:0 1px 2px rgba(20,25,60,.06),0 8px 24px rgba(20,25,60,.06);
+}
+@media(prefers-color-scheme:dark){
+  :root{--bg:#10121c;--card:#191c2b;--ink:#eceefc;--mute:#9aa0c0;--line:#292d44;
+  --kim-s:#3a2214;--lei-s:#15301b;--blu-s:#1b2347;--sh:0 1px 2px #0006,0 8px 24px #0004}
+}
+body[data-tab=kim]{--accent:var(--kim);--accent-s:var(--kim-s)}
+body[data-tab=leitner]{--accent:var(--lei);--accent-s:var(--lei-s)}
+body[data-tab=blurting]{--accent:var(--blu);--accent-s:var(--blu-s)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+.shell{max-width:920px;margin:0 auto;padding:0 16px}
+header{padding:28px 0 8px}
+header h1{margin:0;font-size:1.7rem;letter-spacing:-.02em}
+header h1 span{color:var(--accent)}
+header p{margin:4px 0 0;color:var(--mute)}
+nav{display:flex;gap:6px;margin:18px 0;background:var(--card);padding:6px;border-radius:999px;box-shadow:var(--sh);position:sticky;top:8px;z-index:5}
+nav button{flex:1;border:0;background:none;color:var(--mute);font:inherit;font-weight:600;padding:10px 8px;border-radius:999px;cursor:pointer;transition:.15s}
+nav button[aria-selected=true]{background:var(--accent);color:#fff}
+nav button:focus-visible,.btn:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+section.panel{display:none}
+section.panel.on{display:block}
+.card{background:var(--card);border-radius:var(--r);box-shadow:var(--sh);padding:22px;margin-bottom:16px}
+.card h2{margin:0 0 6px;font-size:1.2rem}
+.card h3{margin:18px 0 8px;font-size:1rem}
+.lead{color:var(--mute);margin:0 0 12px}
+details.how{border:1px solid var(--line);border-radius:12px;padding:10px 14px;margin:12px 0;background:var(--accent-s)}
+details.how summary{cursor:pointer;font-weight:600}
+details.how ol{margin:8px 0 0;padding-left:20px}
+.row{display:flex;flex-wrap:wrap;gap:12px;align-items:end}
+label{display:flex;flex-direction:column;gap:4px;font-size:.85rem;font-weight:600;color:var(--mute)}
+input,select,textarea{font:inherit;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:9px 11px}
+textarea{width:100%;resize:vertical;min-height:140px}
+.btn{font:inherit;font-weight:600;border:0;border-radius:10px;padding:10px 18px;cursor:pointer;background:var(--accent);color:#fff;transition:.15s}
+.btn:hover{filter:brightness(1.08)}
+.btn.ghost{background:none;color:var(--ink);border:1px solid var(--line)}
+.btn.ok{background:var(--ok)}.btn.ko{background:var(--ko)}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.stats{display:flex;flex-wrap:wrap;gap:10px;margin:8px 0 14px}
+.stat{background:var(--accent-s);border-radius:12px;padding:8px 14px;min-width:90px}
+.stat b{display:block;font-size:1.3rem;line-height:1.2}
+.stat small{color:var(--mute)}
+.hide{display:none!important}
+/* Kim */
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:10px;margin:14px 0}
+.tile{background:var(--accent-s);border-radius:14px;padding:14px 8px;text-align:center;font-weight:600;word-break:break-word;min-height:84px;display:flex;flex-direction:column;justify-content:center;gap:4px}
+.tile .e{font-size:2.2rem;line-height:1}
+.tile .n{font-size:.8rem;color:var(--mute);font-weight:500}
+.tile.num{font-size:1.5rem;font-variant-numeric:tabular-nums}
+.bar{height:10px;background:var(--line);border-radius:99px;overflow:hidden;margin:10px 0}
+.bar i{display:block;height:100%;background:var(--accent);width:100%;transition:width .25s linear}
+.timer{font-size:2.4rem;font-weight:800;text-align:center;font-variant-numeric:tabular-nums}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin:6px 0}
+.chip{padding:3px 10px;border-radius:99px;font-size:.88rem;font-weight:600}
+.chip.ok{background:#d3f9d8;color:#1b6b2c}.chip.ko{background:#ffe3e3;color:#b02525}.chip.ex{background:#fff3bf;color:#8a6200}
+@media(prefers-color-scheme:dark){.chip.ok{background:#173d22;color:#8ce99a}.chip.ko{background:#451a1a;color:#ffa8a8}.chip.ex{background:#403712;color:#ffe066}}
+/* Leitner */
+.boxes{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:10px 0}
+.box{background:var(--accent-s);border-radius:14px;padding:12px;text-align:center}
+.box b{font-size:1.6rem;display:block}
+.box small{color:var(--mute);display:block}
+.box .due{font-size:.78rem;font-weight:700;color:var(--accent)}
+.flash{min-height:170px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;background:var(--accent-s);border-radius:16px;padding:22px;font-size:1.25rem;font-weight:600;margin:12px 0}
+.flash small{font-weight:500;color:var(--mute);font-size:.8rem;margin-bottom:6px;text-transform:uppercase;letter-spacing:.06em}
+.flash .ans{margin-top:12px;color:var(--accent)}
+.cardlist{list-style:none;margin:10px 0 0;padding:0;max-height:300px;overflow:auto}
+.cardlist li{display:flex;gap:10px;align-items:center;padding:7px 4px;border-bottom:1px solid var(--line);font-size:.92rem}
+.cardlist li span.t{flex:1}
+.cardlist .bx{font-size:.75rem;font-weight:700;background:var(--accent-s);border-radius:99px;padding:2px 9px}
+.cardlist button{border:0;background:none;color:var(--ko);cursor:pointer;font-size:1.1rem}
+/* Blurting */
+.src{white-space:pre-wrap;background:var(--bg);border-left:4px solid var(--accent);padding:14px 16px;border-radius:8px}
+mark.f{background:#b2f2bb;color:#0b3d17;border-radius:4px;padding:0 2px}
+mark.m{background:#ffc9c9;color:#5c0d0d;border-radius:4px;padding:0 2px}
+@media(prefers-color-scheme:dark){mark.f{background:#1f5c2c;color:#d3f9d8}mark.m{background:#6b1f1f;color:#ffe3e3}}
+.pct{font-size:2.4rem;font-weight:800;color:var(--accent)}
+table{width:100%;border-collapse:collapse;font-size:.9rem}
+th,td{text-align:left;padding:6px 8px;border-bottom:1px solid var(--line)}
+footer{color:var(--mute);text-align:center;font-size:.85rem;padding:18px 0 40px}
+footer a{color:inherit}
+@media(max-width:560px){.boxes{grid-template-columns:1fr}.card{padding:16px}}
+</style>
+</head>
+<body data-tab="kim">
+<div class="shell">
+  <header>
+    <h1>Mémoire<span>+</span></h1>
+    <p>Trois méthodes éprouvées pour mémoriser durablement — à pratiquer ici, directement.</p>
+  </header>
+
+  <nav role="tablist" aria-label="Méthodes de mémorisation">
+    <button role="tab" id="t-kim" aria-controls="p-kim" aria-selected="true" data-tab="kim">🔍 Jeu de Kim</button>
+    <button role="tab" id="t-leitner" aria-controls="p-leitner" aria-selected="false" data-tab="leitner">🗂️ Leitner</button>
+    <button role="tab" id="t-blurting" aria-controls="p-blurting" aria-selected="false" data-tab="blurting">✍️ Blurting</button>
+  </nav>
+
+  <!-- ===================== KIM ===================== -->
+  <section class="panel on" id="p-kim" role="tabpanel" aria-labelledby="t-kim">
+    <div class="card">
+      <h2>Le Jeu de Kim</h2>
+      <p class="lead">Mémorisation visuelle à court terme : observe, cache, rappelle. Développe concentration et attention aux détails.</p>
+      <details class="how"><summary>Comment ça marche ?</summary>
+        <ol><li>Observe la série d'éléments pendant un temps limité (30 à 60 s).</li><li>Les éléments sont masqués.</li><li>Écris de mémoire tout ce dont tu te souviens (un par ligne ou séparés par des virgules).</li></ol>
+        <p style="margin:8px 0 0">💡 Astuce : regroupe les éléments (par catégorie, par histoire) plutôt que de les répéter un à un.</p>
+      </details>
+      <div class="stats">
+        <div class="stat"><b id="k-best">–</b><small>Meilleur score</small></div>
+        <div class="stat"><b id="k-played">0</b><small>Parties</small></div>
+        <div class="stat"><b id="k-level">1</b><small>Niveau conseillé</small></div>
+      </div>
+      <div id="k-setup" class="row">
+        <label>Type d'éléments
+          <select id="k-type"><option value="obj">Objets (emoji)</option><option value="word">Mots</option><option value="num">Nombres</option></select></label>
+        <label>Nombre d'éléments
+          <input id="k-count" type="number" min="3" max="25" value="8"></label>
+        <label>Temps d'observation (s)
+          <input id="k-time" type="number" min="5" max="120" value="40"></label>
+        <button class="btn" id="k-start">Commencer</button>
+      </div>
+
+      <div id="k-observe" class="hide">
+        <div class="timer" id="k-timer">40</div>
+        <div class="bar"><i id="k-bar"></i></div>
+        <div class="grid" id="k-grid"></div>
+        <button class="btn ghost" id="k-skip">J'ai fini, masquer</button>
+      </div>
+
+      <div id="k-recall" class="hide">
+        <h3>Rappelle-toi : qu'y avait-il ?</h3>
+        <textarea id="k-input" placeholder="Un élément par ligne, ou séparés par des virgules…" aria-label="Éléments mémorisés"></textarea>
+        <p><button class="btn" id="k-check">Vérifier</button></p>
+      </div>
+
+      <div id="k-result" class="hide">
+        <div class="pct" id="k-score"></div>
+        <p id="k-msg" class="lead"></p>
+        <div class="chips" id="k-chips"></div>
+        <p><button class="btn" id="k-again">Rejouer (niveau suivant si ≥ 80 %)</button> <button class="btn ghost" id="k-reset">Réglages</button></p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== LEITNER ===================== -->
+  <section class="panel" id="p-leitner" role="tabpanel" aria-labelledby="t-leitner" hidden>
+    <div class="card">
+      <h2>Le Système Leitner</h2>
+      <p class="lead">Répétition espacée avec des cartes mémoire : tu révises plus souvent ce que tu maîtrises le moins.</p>
+      <details class="how"><summary>Comment ça marche ?</summary>
+        <ol><li>Toutes les nouvelles cartes démarrent dans la <b>Boîte 1</b> (révisée chaque jour).</li>
+        <li>Bonne réponse → la carte monte en <b>Boîte 2</b> (tous les 3 jours) puis <b>Boîte 3</b> (chaque semaine).</li>
+        <li>Erreur → retour immédiat en <b>Boîte 1</b>.</li></ol>
+      </details>
+      <div class="boxes" id="l-boxes"></div>
+      <p><button class="btn" id="l-study">Réviser les cartes du jour</button>
+         <button class="btn ghost" id="l-all">Tout réviser (hors calendrier)</button></p>
+
+      <div id="l-session" class="hide">
+        <div class="stats"><div class="stat"><b id="l-left">0</b><small>Restantes</small></div><div class="stat"><b id="l-good">0</b><small>Réussies</small></div><div class="stat"><b id="l-bad">0</b><small>Ratées</small></div></div>
+        <div class="flash" id="l-flash" aria-live="polite"></div>
+        <p id="l-actions">
+          <button class="btn ghost" id="l-reveal">Voir la réponse</button>
+          <button class="btn ok hide" id="l-yes">✔ Je savais</button>
+          <button class="btn ko hide" id="l-no">✘ Je ne savais pas</button>
+          <button class="btn ghost" id="l-stop">Arrêter</button>
+        </p>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Mes cartes</h2>
+      <div class="row">
+        <label style="flex:1;min-width:200px">Question / recto<input id="l-q" placeholder="ex. Capitale de l'Australie ?"></label>
+        <label style="flex:1;min-width:200px">Réponse / verso<input id="l-a" placeholder="ex. Canberra"></label>
+        <button class="btn" id="l-add">Ajouter</button>
+      </div>
+      <ul class="cardlist" id="l-list"></ul>
+      <p class="row" style="margin-top:12px">
+        <button class="btn ghost" id="l-export">Exporter (JSON)</button>
+        <label style="flex-direction:row;align-items:center;gap:8px">Importer <input type="file" id="l-import" accept=".json,application/json"></label>
+        <button class="btn ghost" id="l-wipe">Tout supprimer</button>
+      </p>
+    </div>
+  </section>
+
+  <!-- ===================== BLURTING ===================== -->
+  <section class="panel" id="p-blurting" role="tabpanel" aria-labelledby="t-blurting" hidden>
+    <div class="card">
+      <h2>La Méthode du Blurting</h2>
+      <p class="lead">Rappel actif : ferme le cours, vide ta mémoire sur une page blanche, puis compare.</p>
+      <details class="how"><summary>Comment ça marche ?</summary>
+        <ol><li>Étudie attentivement un texte ou une fiche.</li><li>Le support est masqué : écris vite tout ce dont tu te souviens, sans te soucier de la forme.</li><li>Compare avec l'original : les oublis et erreurs sont surlignés pour être retravaillés.</li></ol>
+      </details>
+
+      <div id="b-setup">
+        <div class="row">
+          <label>Texte d'exemple
+            <select id="b-sample"><option value="">— Choisir —</option></select></label>
+          <label>Temps d'étude (s)
+            <input id="b-time" type="number" min="15" max="900" value="90"></label>
+        </div>
+        <h3>Ton contenu à apprendre</h3>
+        <textarea id="b-text" placeholder="Colle ici ta fiche de cours…" aria-label="Texte source"></textarea>
+        <h3>Notions clés <small style="font-weight:400;color:var(--mute)">(optionnel, séparées par des virgules — sinon détection automatique)</small></h3>
+        <input id="b-keys" style="width:100%" placeholder="ex. mitochondrie, ATP, respiration cellulaire">
+        <p><button class="btn" id="b-start">Étudier</button></p>
+      </div>
+
+      <div id="b-study" class="hide">
+        <div class="timer" id="b-timer">90</div>
+        <div class="bar"><i id="b-bar"></i></div>
+        <div class="src" id="b-src"></div>
+        <p><button class="btn" id="b-hide">Masquer et écrire (blurt)</button></p>
+      </div>
+
+      <div id="b-blurt" class="hide">
+        <h3>Écris tout ce dont tu te souviens</h3>
+        <textarea id="b-out" style="min-height:260px" placeholder="Vide ta mémoire, sans contrainte de forme…" aria-label="Rappel libre"></textarea>
+        <p><button class="btn" id="b-compare">Comparer avec l'original</button></p>
+      </div>
+
+      <div id="b-result" class="hide">
+        <div class="pct" id="b-score"></div>
+        <p class="lead" id="b-msg"></p>
+        <h3>Source annotée <small style="font-weight:400;color:var(--mute)">(<mark class="f">retenu</mark> · <mark class="m">oublié</mark>)</small></h3>
+        <div class="src" id="b-annot"></div>
+        <h3>À retravailler</h3>
+        <div class="chips" id="b-missed"></div>
+        <p><button class="btn" id="b-redo">Refaire un blurt (même texte)</button> <button class="btn ghost" id="b-new">Nouveau texte</button></p>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Historique</h2>
+      <table><thead><tr><th>Date</th><th>Texte</th><th>Score</th></tr></thead><tbody id="b-hist"></tbody></table>
+      <p id="b-nohist" class="lead">Aucune session pour l'instant.</p>
+    </div>
+  </section>
+
+  <footer>Données enregistrées uniquement dans ton navigateur · <a href="../">← Accueil</a></footer>
+</div>
+
+<script>
+"use strict";
+const $=s=>document.querySelector(s);
+const store={
+  get(k,d){try{const v=localStorage.getItem("mem:"+k);return v?JSON.parse(v):d}catch(e){return d}},
+  set(k,v){try{localStorage.setItem("mem:"+k,JSON.stringify(v))}catch(e){}}
+};
+const norm=s=>s.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g,"").replace(/[^a-z0-9\s'-]/g," ").replace(/\s+/g," ").trim();
+const stem=w=>w.length>3?w.replace(/(s|x)$/,""):w;
+const shuffle=a=>{a=[...a];for(let i=a.length-1;i>0;i--){const j=Math.random()*(i+1)|0;[a[i],a[j]]=[a[j],a[i]]}return a};
+const esc=s=>s.replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const show=(el,on)=>el.classList.toggle("hide",!on);
+
+/* ---------- Tabs ---------- */
+const tabs=[...document.querySelectorAll("nav button")];
+function openTab(name){
+  document.body.dataset.tab=name;
+  tabs.forEach(b=>b.setAttribute("aria-selected",b.dataset.tab===name));
+  document.querySelectorAll(".panel").forEach(p=>{const on=p.id==="p-"+name;p.classList.toggle("on",on);p.hidden=!on});
+  store.set("tab",name);
+  if(location.hash!=="#"+name)history.replaceState(null,"","#"+name);
+}
+tabs.forEach((b,i)=>{
+  b.onclick=()=>openTab(b.dataset.tab);
+  b.onkeydown=e=>{
+    if(e.key==="ArrowRight"||e.key==="ArrowLeft"){
+      const n=tabs[(i+(e.key==="ArrowRight"?1:tabs.length-1))%tabs.length];n.focus();openTab(n.dataset.tab);
+    }
+  };
+});
+openTab(["kim","leitner","blurting"].includes(location.hash.slice(1))?location.hash.slice(1):store.get("tab","kim"));
+
+/* ---------- Countdown helper ---------- */
+function countdown(total,onTick,onEnd){
+  const t0=Date.now();let stopped=false;
+  const id=setInterval(()=>{
+    const left=Math.max(0,total-(Date.now()-t0)/1000);
+    onTick(left,left/total);
+    if(left<=0){clearInterval(id);if(!stopped)onEnd()}
+  },100);
+  onTick(total,1);
+  return ()=>{stopped=true;clearInterval(id)};
+}
+
+/* =====================================================
+   1. JEU DE KIM
+   ===================================================== */
+const OBJ=[["🔑","clé"],["⌚","montre"],["📖","livre"],["☂️","parapluie"],["🎸","guitare"],["🕶️","lunettes"],["🍎","pomme"],["✏️","crayon"],["🔔","cloche"],["🧲","aimant"],["🔦","lampe torche"],["🎩","chapeau"],["⚽","ballon"],["🪑","chaise"],["☕","tasse"],["🧭","boussole"],["🔨","marteau"],["✂️","ciseaux"],["📷","appareil photo"],["🚲","vélo"],["🎧","casque"],["🍋","citron"],["🕯️","bougie"],["🧦","chaussette"],["🪁","cerf-volant"],["🔒","cadenas"],["🧸","ours en peluche"],["💡","ampoule"],["🪴","plante"],["🥄","cuillère"]];
+const WORDS="horizon;violon;galet;orage;lanterne;ruisseau;falaise;tulipe;comète;mosaïque;vallée;argile;turquoise;sablier;caravane;nuage;pinceau;glacier;ardoise;festin;rivage;éclipse;nacre;balcon;tempête;sentier;cristal;moulin;brume;zénith;lavande;corail;fanfare;mirage;boussole;épice;vitrail;saule;banquise;scarabée".split(";");
+let K={items:[],stop:null,level:store.get("kim",{best:0,played:0,level:1}).level};
+const kState=()=>store.get("kim",{best:0,played:0,level:1});
+function kRefresh(){const s=kState();$("#k-best").textContent=s.best?s.best+" %":"–";$("#k-played").textContent=s.played;$("#k-level").textContent=s.level}
+kRefresh();
+function kPick(type,n){
+  if(type==="obj")return shuffle(OBJ).slice(0,n).map(([e,name])=>({e,name}));
+  if(type==="word")return shuffle(WORDS).slice(0,n).map(name=>({name}));
+  const set=new Set();while(set.size<n)set.add(String(10+(Math.random()*990|0)));
+  return [...set].map(name=>({name,num:true}));
+}
+function kStart(){
+  const type=$("#k-type").value,n=Math.min(25,Math.max(3,+$("#k-count").value||8)),sec=Math.min(120,Math.max(5,+$("#k-time").value||40));
+  K.items=kPick(type,n);
+  $("#k-grid").innerHTML=K.items.map(i=>i.e?`<div class="tile"><span class="e">${i.e}</span><span class="n">${esc(i.name)}</span></div>`:`<div class="tile ${i.num?"num":""}">${esc(i.name)}</div>`).join("");
+  show($("#k-setup"),false);show($("#k-recall"),false);show($("#k-result"),false);show($("#k-observe"),true);
+  K.stop=countdown(sec,(l,f)=>{$("#k-timer").textContent=Math.ceil(l);$("#k-bar").style.width=f*100+"%"},kRecall);
+}
+function kRecall(){
+  K.stop&&K.stop();
+  show($("#k-observe"),false);show($("#k-recall"),true);
+  $("#k-input").value="";$("#k-input").focus();
+}
+function kCheck(){
+  const given=$("#k-input").value.split(/[\n,;]+/).map(norm).filter(Boolean);
+  const gset=given.map(stem);
+  const found=[],missed=[];const used=new Set();
+  K.items.forEach(it=>{
+    const k=stem(norm(it.name));const idx=gset.findIndex((g,i)=>!used.has(i)&&g===k);
+    if(idx>-1){used.add(idx);found.push(it)}else missed.push(it);
+  });
+  const extra=given.filter((g,i)=>!used.has(i));
+  const pct=Math.max(0,Math.round(found.length/K.items.length*100-Math.min(extra.length,5)*2));
+  const s=kState();s.played++;s.best=Math.max(s.best,pct);
+  s.level=pct>=80?Math.min(s.level+1,10):pct<40?Math.max(1,s.level-1):s.level;store.set("kim",s);kRefresh();
+  $("#k-score").textContent=`${found.length}/${K.items.length} — ${pct} %`;
+  $("#k-msg").textContent=pct>=80?"Excellent ! Ta mémoire visuelle est affûtée.":pct>=50?"Bien joué. Essaie de regrouper les éléments par thème.":"Pas grave : invente une petite histoire qui relie les éléments entre eux.";
+  const lbl=i=>(i.e?i.e+" ":"")+i.name;
+  $("#k-chips").innerHTML=found.map(i=>`<span class="chip ok">✔ ${esc(lbl(i))}</span>`).join("")+missed.map(i=>`<span class="chip ko">✘ ${esc(lbl(i))}</span>`).join("")+extra.map(e=>`<span class="chip ex">? ${esc(e)}</span>`).join("");
+  show($("#k-recall"),false);show($("#k-result"),true);
+}
+function kAgain(){
+  // niveau → +1 élément tous les niveaux, -2 s de temps
+  const lv=kState().level;
+  $("#k-count").value=Math.min(25,5+lv*2);$("#k-time").value=Math.max(10,50-lv*2);
+  kStart();
+}
+$("#k-start").onclick=kStart;$("#k-skip").onclick=kRecall;$("#k-check").onclick=kCheck;
+$("#k-again").onclick=kAgain;
+$("#k-reset").onclick=()=>{show($("#k-result"),false);show($("#k-setup"),true)};
+
+/* =====================================================
+   2. LEITNER
+   ===================================================== */
+const INTERVALS=[1,3,7]; // jours
+const DAY=864e5;
+const today=()=>Math.floor(Date.now()/DAY);
+let cards=store.get("cards",null);
+if(!cards){
+  cards=[["Capitale de l'Australie ?","Canberra"],["Quel est le symbole chimique de l'or ?","Au"],["Année de la chute du mur de Berlin ?","1989"],["Formule de l'aire d'un cercle ?","π × r²"],["Qui a peint « La Nuit étoilée » ?","Vincent van Gogh"],["« Mitochondrie » : rôle principal ?","Produire l'énergie (ATP) de la cellule"]]
+   .map(([q,a],i)=>({id:Date.now()+i,q,a,box:1,due:today()}));
+  store.set("cards",cards);
+}
+const save=()=>store.set("cards",cards);
+let L={queue:[],cur:null,good:0,bad:0};
+function lRender(){
+  const t=today();
+  $("#l-boxes").innerHTML=[1,2,3].map(b=>{
+    const inB=cards.filter(c=>c.box===b),due=inB.filter(c=>c.due<=t).length;
+    return `<div class="box"><small>Boîte ${b}</small><b>${inB.length}</b><small>${b===1?"chaque jour":b===2?"tous les 3 jours":"chaque semaine"}</small><span class="due">${due} à réviser</span></div>`;
+  }).join("");
+  $("#l-list").innerHTML=cards.length?cards.map(c=>`<li><span class="bx">B${c.box}</span><span class="t"><b>${esc(c.q)}</b> → ${esc(c.a)}</span><button data-del="${c.id}" aria-label="Supprimer la carte">✕</button></li>`).join(""):"<li>Aucune carte. Ajoutes-en une ci-dessus.</li>";
+  $("#l-study").disabled=!cards.some(c=>c.due<=t);
+  $("#l-all").disabled=!cards.length;
+}
+function lStart(all){
+  const t=today();
+  L.queue=shuffle(cards.filter(c=>all||c.due<=t));L.good=L.bad=0;
+  if(!L.queue.length)return;
+  show($("#l-session"),true);lNext();
+}
+function lNext(){
+  $("#l-left").textContent=L.queue.length;$("#l-good").textContent=L.good;$("#l-bad").textContent=L.bad;
+  if(!L.queue.length){
+    $("#l-flash").innerHTML=`<small>Session terminée</small>${L.good} réussie(s), ${L.bad} à revoir 🎉`;
+    ["#l-reveal","#l-yes","#l-no"].forEach(s=>show($(s),false));$("#l-stop").textContent="Fermer";lRender();return;
+  }
+  L.cur=L.queue[0];
+  $("#l-flash").innerHTML=`<small>Boîte ${L.cur.box} · question</small>${esc(L.cur.q)}`;
+  show($("#l-reveal"),true);show($("#l-yes"),false);show($("#l-no"),false);$("#l-stop").textContent="Arrêter";
+}
+function lReveal(){
+  $("#l-flash").innerHTML=`<small>Boîte ${L.cur.box} · question</small>${esc(L.cur.q)}<div class="ans">${esc(L.cur.a)}</div>`;
+  show($("#l-reveal"),false);show($("#l-yes"),true);show($("#l-no"),true);
+}
+function lAnswer(ok){
+  const c=L.cur;L.queue.shift();
+  if(ok){c.box=Math.min(3,c.box+1);L.good++}else{c.box=1;L.bad++}
+  c.due=today()+INTERVALS[c.box-1];
+  save();lRender();lNext();
+}
+$("#l-study").onclick=()=>lStart(false);$("#l-all").onclick=()=>lStart(true);
+$("#l-reveal").onclick=lReveal;$("#l-yes").onclick=()=>lAnswer(true);$("#l-no").onclick=()=>lAnswer(false);
+$("#l-stop").onclick=()=>{show($("#l-session"),false);["#l-reveal"].forEach(s=>show($(s),true))};
+$("#l-add").onclick=()=>{
+  const q=$("#l-q").value.trim(),a=$("#l-a").value.trim();if(!q||!a)return;
+  cards.push({id:Date.now(),q,a,box:1,due:today()});save();$("#l-q").value=$("#l-a").value="";lRender();$("#l-q").focus();
+};
+$("#l-a").onkeydown=e=>{if(e.key==="Enter")$("#l-add").click()};
+$("#l-list").onclick=e=>{const id=e.target.dataset.del;if(id){cards=cards.filter(c=>String(c.id)!==id);save();lRender()}};
+$("#l-export").onclick=()=>{
+  const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([JSON.stringify(cards,null,2)],{type:"application/json"}));a.download="leitner-cartes.json";a.click();URL.revokeObjectURL(a.href);
+};
+$("#l-import").onchange=async e=>{
+  try{
+    const data=JSON.parse(await e.target.files[0].text());
+    if(!Array.isArray(data))throw 0;
+    data.filter(c=>c&&c.q&&c.a).forEach((c,i)=>cards.push({id:Date.now()+i,q:String(c.q),a:String(c.a),box:[1,2,3].includes(c.box)?c.box:1,due:today()}));
+    save();lRender();
+  }catch(err){alert("Fichier invalide : attendu un tableau JSON de cartes {q, a}.")}
+  e.target.value="";
+};
+$("#l-wipe").onclick=()=>{if(confirm("Supprimer toutes les cartes ?")){cards=[];save();lRender()}};
+lRender();
+
+/* =====================================================
+   3. BLURTING
+   ===================================================== */
+const SAMPLES={
+"La photosynthèse":"La photosynthèse est le processus par lequel les plantes, les algues et certaines bactéries convertissent l'énergie lumineuse en énergie chimique. Elle se déroule dans les chloroplastes, qui contiennent la chlorophylle, un pigment vert qui absorbe la lumière. La première phase, dite phase claire, a lieu dans les thylakoïdes : la lumière sépare les molécules d'eau, libérant de l'oxygène, et produit de l'ATP et du NADPH. La seconde phase, le cycle de Calvin, se déroule dans le stroma : le dioxyde de carbone est fixé grâce à l'enzyme Rubisco pour fabriquer du glucose. Au total, six molécules de dioxyde de carbone et six molécules d'eau donnent une molécule de glucose et six molécules d'oxygène.",
+"La Révolution française":"La Révolution française débute en 1789 avec la convocation des États généraux et la prise de la Bastille le 14 juillet. En août 1789, l'Assemblée nationale constituante adopte la Déclaration des droits de l'homme et du citoyen. La monarchie est abolie en septembre 1792 et la Première République proclamée. Louis XVI est guillotiné en janvier 1793. La Terreur, dirigée par le Comité de salut public et Robespierre, s'étend de 1793 à 1794. Après la chute de Robespierre au 9 thermidor, le Directoire gouverne jusqu'au coup d'État de Napoléon Bonaparte en 1799.",
+"La mémoire humaine":"Selon le modèle d'Atkinson et Shiffrin, la mémoire comprend trois systèmes : la mémoire sensorielle, la mémoire à court terme et la mémoire à long terme. La mémoire à court terme retient environ sept éléments, plus ou moins deux, pendant quelques dizaines de secondes. La répétition espacée et le rappel actif favorisent le transfert vers la mémoire à long terme. La courbe de l'oubli d'Ebbinghaus montre que l'on oublie rapidement une grande partie de ce qui a été appris si l'on ne révise pas."
+};
+const STOP=new Set("dans pour avec sans sont elle elles leur leurs cette ces mais donc ainsi comme entre plus moins tout tous toute toutes aussi dont chez vers sous sur par une des les aux est ont qui que quoi lors alors apres avant depuis jusqu selon encore etre fait faire peut ainsi".split(" "));
+Object.keys(SAMPLES).forEach(k=>$("#b-sample").insertAdjacentHTML("beforeend",`<option>${esc(k)}</option>`));
+$("#b-sample").onchange=e=>{
+  const v=e.target.value;if(!v)return;
+  $("#b-text").value=SAMPLES[v];
+  $("#b-keys").value={ "La photosynthèse":"chloroplastes, chlorophylle, thylakoïdes, ATP, NADPH, cycle de Calvin, stroma, Rubisco, glucose, oxygène","La Révolution française":"1789, Bastille, Déclaration des droits, 1792, République, Louis XVI, Terreur, Robespierre, thermidor, Directoire, Bonaparte, 1799","La mémoire humaine":"sensorielle, court terme, long terme, Atkinson, Shiffrin, sept éléments, répétition espacée, rappel actif, Ebbinghaus, courbe de l'oubli"}[v];
+};
+let B={text:"",keys:[],title:"",stop:null};
+function autoKeys(text){
+  const freq={};
+  (norm(text).match(/[a-z0-9'-]{6,}/g)||[]).forEach(w=>{if(!STOP.has(w))freq[w]=(freq[w]||0)+1});
+  const nums=text.match(/\b\d{3,4}\b/g)||[];
+  return [...new Set([...Object.keys(freq).sort((a,b)=>freq[b]-freq[a]||b.length-a.length).slice(0,14),...nums])];
+}
+function bStart(){
+  B.text=$("#b-text").value.trim();
+  if(B.text.length<30){alert("Ajoute un texte un peu plus long (30 caractères minimum).");return}
+  const manual=$("#b-keys").value.split(/[,;\n]+/).map(s=>s.trim()).filter(Boolean);
+  B.keys=manual.length?manual:autoKeys(B.text);
+  B.title=$("#b-sample").value||B.text.slice(0,28)+"…";
+  $("#b-src").textContent=B.text;
+  show($("#b-setup"),false);show($("#b-result"),false);show($("#b-study"),true);
+  const sec=Math.min(900,Math.max(15,+$("#b-time").value||90));
+  B.stop=countdown(sec,(l,f)=>{$("#b-timer").textContent=Math.ceil(l);$("#b-bar").style.width=f*100+"%"},bBlurt);
+}
+function bBlurt(){
+  B.stop&&B.stop();
+  show($("#b-study"),false);show($("#b-blurt"),true);$("#b-out").value="";$("#b-out").focus();
+}
+function bCompare(){
+  const out=norm($("#b-out").value);
+  const hit=k=>{const nk=norm(k);return nk&&(out.includes(nk)||(nk.length>4&&out.includes(stem(nk))))};
+  const found=B.keys.filter(hit),missed=B.keys.filter(k=>!hit(k));
+  const pct=B.keys.length?Math.round(found.length/B.keys.length*100):0;
+  // surlignage de la source
+  let html=esc(B.text);
+  [...B.keys].sort((a,b)=>b.length-a.length).forEach(k=>{
+    const cls=hit(k)?"f":"m";
+    const re=new RegExp("("+esc(k).replace(/[.*+?^${}()|[\]\\]/g,"\\$&")+")(?![^<]*>)","gi");
+    html=html.replace(re,`<mark class="${cls}">$1</mark>`);
+  });
+  $("#b-annot").innerHTML=html;
+  $("#b-score").textContent=`${found.length}/${B.keys.length} notions — ${pct} %`;
+  $("#b-msg").textContent=pct>=80?"Très bon rappel ! Programme une prochaine révision dans quelques jours.":pct>=50?"Bonne base. Relis les notions en rouge puis refais un blurt.":"Beaucoup d'oublis : c'est normal au début. Relis, puis recommence plus court.";
+  $("#b-missed").innerHTML=missed.length?missed.map(k=>`<span class="chip ko">${esc(k)}</span>`).join(""):'<span class="chip ok">Rien d\'oublié 🎉</span>';
+  const h=store.get("blurts",[]);h.unshift({d:new Date().toLocaleDateString("fr-FR"),t:B.title,s:pct});store.set("blurts",h.slice(0,15));
+  bHist();
+  show($("#b-blurt"),false);show($("#b-result"),true);
+}
+function bHist(){
+  const h=store.get("blurts",[]);
+  $("#b-hist").innerHTML=h.map(r=>`<tr><td>${esc(r.d)}</td><td>${esc(r.t)}</td><td><b>${r.s} %</b></td></tr>`).join("");
+  show($("#b-nohist"),!h.length);
+}
+$("#b-start").onclick=bStart;$("#b-hide").onclick=bBlurt;$("#b-compare").onclick=bCompare;
+$("#b-redo").onclick=()=>{
+  show($("#b-result"),false);
+  show($("#b-blurt"),true);$("#b-out").value="";$("#b-out").focus();
+};
+$("#b-new").onclick=()=>{show($("#b-result"),false);show($("#b-setup"),true)};
+bHist();
+</script>
+</body>
+</html>

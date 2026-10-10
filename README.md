@@ -8,6 +8,7 @@ Sert `https://codein23.github.io/`, qui renvoie vers :
 |---|---|
 | Trade Journal + Analytics | https://codein23.github.io/trade-journal/ |
 | Kynder Braids | https://codein23.github.io/kynderbraids/ |
+| Mémoire+ (Kim, Leitner, Blurting) | https://codein23.github.io/memoire/ |
 
 > `fx-journal-dashboard` est volontairement absent de cette page (outil privé),
 > même si son GitHub Pages reste actif.
