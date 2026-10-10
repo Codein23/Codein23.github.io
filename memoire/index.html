@@ -323,12 +323,28 @@ function kRecall(){
   show($("#k-observe"),false);show($("#k-recall"),true);
   $("#k-input").value="";$("#k-input").focus();
 }
+// Correspondance indulgente : tirets/espaces/apostrophes/articles ignorés, 1-2 fautes tolérées
+const kKey=s=>stem(norm(s).replace(/[-']/g," ").replace(/^(un|une|le|la|les|l|du|des|de|d) /,"").replace(/ /g,""));
+function kClose(a,b){
+  const max=Math.min(a.length,b.length)>=9?2:Math.min(a.length,b.length)>=5?1:0;
+  if(!max||/^\d+$/.test(a))return false;
+  if(Math.abs(a.length-b.length)>max)return false;
+  let prev=Array.from({length:b.length+1},(_, j)=>j);
+  for(let i=1;i<=a.length;i++){
+    const cur=[i];
+    for(let j=1;j<=b.length;j++)cur[j]=Math.min(prev[j]+1,cur[j-1]+1,prev[j-1]+(a[i-1]===b[j-1]?0:1));
+    prev=cur;
+  }
+  return prev[b.length]<=max;
+}
 function kCheck(){
   const given=$("#k-input").value.split(/[\n,;]+/).map(norm).filter(Boolean);
-  const gset=given.map(stem);
+  const gkeys=given.map(kKey);
   const found=[],missed=[];const used=new Set();
   K.items.forEach(it=>{
-    const k=stem(norm(it.name));const idx=gset.findIndex((g,i)=>!used.has(i)&&g===k);
+    const k=kKey(it.name);
+    let idx=gkeys.findIndex((g,i)=>!used.has(i)&&g===k);
+    if(idx<0)idx=gkeys.findIndex((g,i)=>!used.has(i)&&kClose(g,k));
     if(idx>-1){used.add(idx);found.push(it)}else missed.push(it);
   });
   const extra=given.filter((g,i)=>!used.has(i));
